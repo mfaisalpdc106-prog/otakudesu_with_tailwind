@@ -2,11 +2,11 @@
 // function identifier (ParameterList opt) { FunctionBody }
 
 //Contoh :
-function tampilPesan (nama){
-    alert('halo ' + nama);
-}
+// function tampilPesan (nama){
+//     alert('halo ' + nama);
+// }
 
-console.log(tampilPesan('faisal'));
+// console.log(tampilPesan('faisal'));
 // Function Expression
 // function identifier opt (ParameterList opt) { FunctionBody }
 
@@ -16,8 +16,8 @@ console.log(tampilPesan('faisal'));
 // }
 
 //Contoh
-// let tampil = function(name){
-//     alert('halo ' + name);
-// }
+let tampil = function(name){
+    alert('halo ' + name);
+}
 
-// tampil('faisal');
+tampil('faisal');
