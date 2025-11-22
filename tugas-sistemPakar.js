@@ -1,10 +1,10 @@
+// Daftar perangkat sumber & tujuan
 const sumberList = [
     "komputer/laptop (VGA)",
-    "komputer (DVI)",
-    "komputer/laptop (HDMI)",
-    "komputer (DP)",
     "komputer/laptop (USB-C)",
-    "smartphone (USB-C)",
+    "komputer/laptop (HDMI)",
+    "komputer (DVI)",
+    "komputer (DP)",
     "konsol game (Composite)",
     "konsol game (Component)",
     "konsol game (HDMI)",
@@ -13,19 +13,12 @@ const sumberList = [
     "dvr (VGA)",
     "dvr (HDMI)",
     "dvr (Composite)",
-    "tv (VGA)",
-    "tv (DVI)",
-    "tv (HDMI)",
-    "tv (Composite)",
-    "tv (Component)",
-    "tv (S-Video)",
     "dvd player (Composite)",
     "dvd player (Component)",
     "dvd (S-Video)",
     "dvd (HDMI)",
     "stb (Composite)",
     "stb (HDMI)",
-    "handycam (S-Video)",
 ];
 
 const tujuanList = [
@@ -38,76 +31,139 @@ const tujuanList = [
     "tv (Component)",
     "tv (Composite)",
     "tv (HDMI)",
+    "tv (DVI)",
     "proyektor (VGA)",
     "proyektor (HDMI)",
     "proyektor (Composite)",
     "proyektor (Component)",
     "proyektor (DVI)",
     "proyektor (S-Video)",
-    "tv (DVI)",
 ];
 
-function fill(sel, arr) {
-    sel.innerHTML = '<option value="">-- pilih --</option>' + arr.map((a) => `<option>${a}</option>`).join("");
-}
-fill(src, sumberList);
-fill(dst, tujuanList);
-
-function portOf(x) {
-    return x.match(/\((.*?)\)/)[1].toUpperCase();
+// Isi dropdown
+function isiPilihan(selectBox, data) {
+    selectBox.innerHTML =
+        `<option value="">-- pilih --</option>` + data.map((item) => `<option>${item}</option>`).join("");
 }
 
-const direct = new Set([
+isiPilihan(src, sumberList);
+isiPilihan(dst, tujuanList);
+
+// Ambil nama port dari teks seperti "(HDMI)"
+function ambilPort(text) {
+    return text.match(/\((.*?)\)/)[1].toUpperCase();
+}
+
+// Pasangan kabel langsung
+const kabelLangsung = new Set([
     "HDMI→HDMI",
-    "HDMI→DVI",
-    "DVI→HDMI",
     "DP→DP",
-    "DP→HDMI",
-    "DP→DVI",
-    "DP→VGA",
-    "USB-C→USB-C",
-    "USB-C→HDMI",
-    "USB-C→DP",
-    "USB-C→DVI",
-    "USB-C→VGA",
     "DVI→DVI",
     "VGA→VGA",
+    "USB-C→USB-C",
     "COMPOSITE→COMPOSITE",
     "COMPONENT→COMPONENT",
     "S-VIDEO→S-VIDEO",
 ]);
 
-const conv = {
+// Converter yang tersedia
+const converterList = {
+    // HDMI related
+    "HDMI→DVI": "converter HDMI → DVI",
+    "DVI→HDMI": "converter DVI → HDMI",
     "HDMI→DP": "converter HDMI → DP",
+    "DP→HDMI": "converter DP → HDMI",
     "HDMI→VGA": "converter HDMI → VGA",
-    "DVI→VGA": "adapter DVI-I → VGA",
     "VGA→HDMI": "converter VGA → HDMI",
+    "HDMI→USB-C": "converter HDMI → USB-C",
+    "USB-C→HDMI": "converter USB-C → HDMI",
+    "HDMI→COMPOSITE": "converter HDMI → Composite",
     "COMPOSITE→HDMI": "converter Composite → HDMI",
+    "HDMI→COMPONENT": "converter HDMI → Component",
     "COMPONENT→HDMI": "converter Component → HDMI",
+    "HDMI→S-VIDEO": "converter HDMI → S-Video",
     "S-VIDEO→HDMI": "converter S-Video → HDMI",
+
+    // DVI related
+    "DVI→DP": "converter DVI → DP",
+    "DP→DVI": "converter DP → DVI",
+    "DVI→VGA": "converter DVI → VGA",
+    "VGA→DVI": "converter VGA → DVI",
+    "DVI→USB-C": "converter DVI → USB-C",
+    "USB-C→DVI": "converter USB-C → DVI",
+    "DVI→COMPOSITE": "converter DVI → Composite",
+    "COMPOSITE→DVI": "converter Composite → DVI",
+    "DVI→COMPONENT": "converter DVI → Component",
+    "COMPONENT→DVI": "converter Component → DVI",
+    "DVI→S-VIDEO": "converter DVI → S-Video",
+    "S-VIDEO→DVI": "converter S-Video → DVI",
+
+    // DP related
+    "DP→VGA": "converter DP → VGA",
+    "VGA→DP": "converter VGA → DP",
+    "DP→USB-C": "converter DP → USB-C",
+    "USB-C→DP": "converter USB-C → DP",
+    "DP→COMPOSITE": "converter DP → Composite",
+    "COMPOSITE→DP": "converter Composite → DP",
+    "DP→COMPONENT": "converter DP → Component",
+    "COMPONENT→DP": "converter Component → DP",
+    "DP→S-VIDEO": "converter DP → S-Video",
+    "S-VIDEO→DP": "converter S-Video → DP",
+
+    // USB-C related
+    "USB-C→VGA": "converter USB-C → VGA",
+    "VGA→USB-C": "converter VGA → USB-C",
+    "USB-C→COMPOSITE": "converter USB-C → Composite",
+    "COMPOSITE→USB-C": "converter Composite → USB-C",
+    "USB-C→COMPONENT": "converter USB-C → Component",
+    "COMPONENT→USB-C": "converter Component → USB-C",
+    "USB-C→S-VIDEO": "converter USB-C → S-Video",
+    "S-VIDEO→USB-C": "converter S-Video → USB-C",
+
+    // Composite related
+    "COMPOSITE→COMPONENT": "converter Composite → Component",
+    "COMPONENT→COMPOSITE": "converter Component → Composite",
+    "COMPOSITE→S-VIDEO": "converter Composite → S-Video",
+    "S-VIDEO→COMPOSITE": "converter S-Video → Composite",
+
+    // Component related
+    "COMPONENT→S-VIDEO": "converter Component → S-Video",
+    "S-VIDEO→COMPONENT": "converter S-Video → Component"
 };
 
-function infer(a, b) {
-    const A = portOf(a),
-        B = portOf(b);
-    const key = `${A}→${B}`;
+// Logika inferensi
+function cekKabel(sumber, tujuan) {
+    const A = ambilPort(sumber);
+    const B = ambilPort(tujuan);
+    const kombinasi = `${A}→${B}`;
 
-    if (A === B) return `Gunakan kabel langsung ${A} → ${B}.`;
-    if (direct.has(key)) return `Gunakan kabel langsung ${A} → ${B}.`;
-    if (conv[key]) return `Gunakan <b>${conv[key]}</b>.`;
-    return `Tidak ada kabel langsung. Gunakan converter ${A} → ${B}.`;
+    // Jika port sama atau ada kabel langsung
+    if (A === B || kabelLangsung.has(kombinasi)) {
+        return `Gunakan kabel langsung ${A} → ${B}.`;
+    }
+
+    // Jika tersedia converter spesifik
+    if (converterList[kombinasi]) {
+        return `Gunakan <b>${converterList[kombinasi]}</b>.`;
+    }
+
+    // Jika tidak tersedia converter spesifik (default)
+    return `Gunakan converter ${A} → ${B}.`;
 }
 
+// Tombol cek
 check.onclick = () => {
     if (!src.value || !dst.value) {
         out.classList.remove("hidden");
         out.innerHTML = "Pilih kedua perangkat.";
         return;
     }
+
     out.classList.remove("hidden");
-    out.innerHTML = infer(src.value, dst.value);
+    out.innerHTML = cekKabel(src.value, dst.value);
 };
 
+// Tombol reset
 reset.onclick = () => {
     src.value = "";
     dst.value = "";
