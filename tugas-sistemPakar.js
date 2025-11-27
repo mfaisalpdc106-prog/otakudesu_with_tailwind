@@ -1,4 +1,4 @@
-// Daftar perangkat sumber & tujuan
+// perangkat sumber
 const sumberList = [
     "komputer/laptop (VGA)",
     "komputer/laptop (USB-C)",
@@ -21,6 +21,7 @@ const sumberList = [
     "stb (HDMI)",
 ];
 
+// perangkat tujuan
 const tujuanList = [
     "monitor (HDMI)",
     "monitor (DVI)",
@@ -40,7 +41,7 @@ const tujuanList = [
     "proyektor (S-Video)",
 ];
 
-// Isi dropdown
+// isi dropdown
 function isiPilihan(selectBox, data) {
     selectBox.innerHTML =
         `<option value="">-- pilih --</option>` + data.map((item) => `<option>${item}</option>`).join("");
@@ -49,12 +50,12 @@ function isiPilihan(selectBox, data) {
 isiPilihan(src, sumberList);
 isiPilihan(dst, tujuanList);
 
-// Ambil nama port dari teks seperti "(HDMI)"
+// ambil nama port dari teks, contoh : "(HDMI)"
 function ambilPort(text) {
     return text.match(/\((.*?)\)/)[1].toUpperCase();
 }
 
-// Pasangan kabel langsung
+// kabel langsung
 const kabelLangsung = new Set([
     "HDMI→HDMI",
     "DP→DP",
@@ -66,9 +67,10 @@ const kabelLangsung = new Set([
     "S-VIDEO→S-VIDEO",
 ]);
 
-// Converter yang tersedia
+// converter
 const converterList = {
-    // HDMI related
+
+    // HDMI
     "HDMI→DVI": "converter HDMI → DVI",
     "DVI→HDMI": "converter DVI → HDMI",
     "HDMI→DP": "converter HDMI → DP",
@@ -84,7 +86,7 @@ const converterList = {
     "HDMI→S-VIDEO": "converter HDMI → S-Video",
     "S-VIDEO→HDMI": "converter S-Video → HDMI",
 
-    // DVI related
+    // DVI
     "DVI→DP": "converter DVI → DP",
     "DP→DVI": "converter DP → DVI",
     "DVI→VGA": "converter DVI → VGA",
@@ -98,7 +100,7 @@ const converterList = {
     "DVI→S-VIDEO": "converter DVI → S-Video",
     "S-VIDEO→DVI": "converter S-Video → DVI",
 
-    // DP related
+    // DP
     "DP→VGA": "converter DP → VGA",
     "VGA→DP": "converter VGA → DP",
     "DP→USB-C": "converter DP → USB-C",
@@ -110,7 +112,7 @@ const converterList = {
     "DP→S-VIDEO": "converter DP → S-Video",
     "S-VIDEO→DP": "converter S-Video → DP",
 
-    // USB-C related
+    // USB-C
     "USB-C→VGA": "converter USB-C → VGA",
     "VGA→USB-C": "converter VGA → USB-C",
     "USB-C→COMPOSITE": "converter USB-C → Composite",
@@ -120,50 +122,53 @@ const converterList = {
     "USB-C→S-VIDEO": "converter USB-C → S-Video",
     "S-VIDEO→USB-C": "converter S-Video → USB-C",
 
-    // Composite related
+    // composite
     "COMPOSITE→COMPONENT": "converter Composite → Component",
     "COMPONENT→COMPOSITE": "converter Component → Composite",
     "COMPOSITE→S-VIDEO": "converter Composite → S-Video",
     "S-VIDEO→COMPOSITE": "converter S-Video → Composite",
 
-    // Component related
+    // component
     "COMPONENT→S-VIDEO": "converter Component → S-Video",
     "S-VIDEO→COMPONENT": "converter S-Video → Component"
 };
 
-// Logika inferensi
+// logila
 function cekKabel(sumber, tujuan) {
     const A = ambilPort(sumber);
     const B = ambilPort(tujuan);
     const kombinasi = `${A}→${B}`;
 
-    // Jika port sama atau ada kabel langsung
+    // jika port sama atau ada kabel langsung
     if (A === B || kabelLangsung.has(kombinasi)) {
         return `Gunakan kabel langsung ${A} → ${B}.`;
     }
 
-    // Jika tersedia converter spesifik
+    // jika tersedia converter spesifik
     if (converterList[kombinasi]) {
         return `Gunakan <b>${converterList[kombinasi]}</b>.`;
     }
 
-    // Jika tidak tersedia converter spesifik (default)
+    // jika tidak tersedia converter spesifik (default)
     return `Gunakan converter ${A} → ${B}.`;
 }
 
-// Tombol cek
+// combol cek
 check.onclick = () => {
+
+    // jika belum memilih perangkat sumber/tujuan
     if (!src.value || !dst.value) {
         out.classList.remove("hidden");
         out.innerHTML = "Pilih kedua perangkat.";
         return;
     }
-
+    
+    // jika sudah memilih perangkat sumber/tujuan
     out.classList.remove("hidden");
     out.innerHTML = cekKabel(src.value, dst.value);
 };
 
-// Tombol reset
+// tombol reset
 reset.onclick = () => {
     src.value = "";
     dst.value = "";
